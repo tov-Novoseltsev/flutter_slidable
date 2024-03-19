@@ -4,7 +4,7 @@ import 'controller.dart';
 import 'dismissible_pane_motions.dart';
 import 'slidable.dart';
 
-const double _kDismissThreshold = 0.75;
+const double kDismissThreshold = 0.75;
 const Duration _kDismissalDuration = Duration(milliseconds: 300);
 const Duration _kResizeDuration = Duration(milliseconds: 300);
 
@@ -28,7 +28,7 @@ class DismissiblePane extends StatefulWidget {
   const DismissiblePane({
     Key? key,
     required this.onDismissed,
-    this.dismissThreshold = _kDismissThreshold,
+    this.dismissThreshold = kDismissThreshold,
     this.dismissalDuration = _kDismissalDuration,
     this.resizeDuration = _kResizeDuration,
     this.confirmDismiss,

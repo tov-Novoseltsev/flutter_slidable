@@ -1,6 +1,7 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_slidable/src/auto_close_behavior.dart';
+import 'package:flutter_slidable/src/dismissible_pane.dart';
 import 'package:flutter_slidable/src/notifications_old.dart';
 
 import 'action_pane_configuration.dart';
@@ -274,6 +275,14 @@ class _SlidableState extends State<Slidable>
       controller: controller,
       direction: widget.direction,
       dragStartBehavior: widget.dragStartBehavior,
+      startDismissThreshold:
+          (widget.startActionPane?.dismissible as DismissiblePane?)
+                  ?.dismissThreshold ??
+              kDismissThreshold,
+      endDismissThreshold:
+          (widget.endActionPane?.dismissible as DismissiblePane?)
+                  ?.dismissThreshold ??
+              kDismissThreshold,
       child: SlidableNotificationSender(
         tag: widget.groupTag,
         controller: controller,

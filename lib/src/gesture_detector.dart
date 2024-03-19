@@ -1,5 +1,6 @@
 import 'package:flutter/gestures.dart';
 import 'package:flutter/widgets.dart';
+import 'package:flutter/services.dart';
 
 import 'controller.dart';
 
@@ -13,6 +14,8 @@ class SlidableGestureDetector extends StatefulWidget {
     required this.controller,
     required this.direction,
     required this.child,
+    required this.startDismissThreshold,
+    required this.endDismissThreshold,
     this.dragStartBehavior = DragStartBehavior.start,
   }) : super(key: key);
 
@@ -20,6 +23,8 @@ class SlidableGestureDetector extends StatefulWidget {
   final Widget child;
   final Axis direction;
   final bool enabled;
+  final double startDismissThreshold;
+  final double endDismissThreshold;
 
   /// Determines the way that drag start behavior is handled.
   ///
@@ -47,6 +52,7 @@ class _SlidableGestureDetectorState extends State<SlidableGestureDetector> {
   double dragExtent = 0;
   late Offset startPosition;
   late Offset lastPosition;
+  bool toBeOpened = false;
 
   bool get directionIsXAxis {
     return widget.direction == Axis.horizontal;
@@ -88,6 +94,25 @@ class _SlidableGestureDetectorState extends State<SlidableGestureDetector> {
     dragExtent += delta;
     lastPosition = details.localPosition;
     widget.controller.ratio = dragExtent / overallDragAxisExtent;
+
+    _handleHapticFeedback(
+      widget.controller.ratio.abs(),
+      widget.controller.ratio > 0
+          ? widget.startDismissThreshold
+          : widget.endDismissThreshold,
+    );
+  }
+
+  void _handleHapticFeedback(double ratio, double threshold) {
+    if (widget.controller.ratio.abs() > threshold && !toBeOpened) {
+      HapticFeedback.mediumImpact();
+      toBeOpened = true;
+    }
+
+    if (widget.controller.ratio.abs() < threshold && toBeOpened) {
+      HapticFeedback.mediumImpact();
+      toBeOpened = false;
+    }
   }
 
   void handleDragEnd(DragEndDetails details) {
@@ -100,5 +125,7 @@ class _SlidableGestureDetectorState extends State<SlidableGestureDetector> {
       details.primaryVelocity,
       gestureDirection,
     );
+
+    toBeOpened = false;
   }
 }
